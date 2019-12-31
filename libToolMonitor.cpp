@@ -10,10 +10,14 @@
 
 string strFilePath = "";
 string strConfigPath = "";
-int averNum = 1;
-int averTime = 0;
+int avgNum = 1;
+int configAvgTime = 0;
 int countPointNum = 0;
 int fileLineCount = 0;
+int configMaxLoopMark = 0;
+int configMaxLineNo = 0;
+int configTotalNum = 0;
+
 ifstream fFile;
 
 string last_line = "";
@@ -51,7 +55,10 @@ int readConfigFile(string strConfigPath) {
 				Json::Value root;
 				Json::Reader configReader;
 				if (configReader.parse(strConfigData,root)) {
-					averTime = root["averTime"].asInt();
+					configAvgTime = root["avgTime"].asInt();
+					configMaxLoopMark = root["maxLoopMark"].asInt();
+					configMaxLineNo = root["maxLineNo"].asInt();
+					configTotalNum = root["total"].asInt();
 				}
 			}
 		} else {
@@ -65,12 +72,34 @@ int readConfigFile(string strConfigPath) {
 	return 0;
 }
 
+int ifRead(int pointNum,int lineNo) {
+	if (pointNum == 0) {
+		if (lineNo <= 1) {
+			return 1;
+		} else {
+
+		}
+	} else if (pointNum == 1) {
+
+	}
+	return 0;
+}
+
 int readDataFile(string strFilePath) {
 	if (strFilePath != "") {
-		fFile.open(strFilePath,ios:in);
+		fFile.open(strFilePath,ios::in);
 		if (fFile.is_open()) {
-			while() {
-
+			string strLineContent = "";
+			while(getline(fFile,strLineContent)) {
+				fileLineCount++;
+				if (strLineContent != "") {
+					while(ifRead(countPointNum,fileLineCount)) {
+						if (current_line == "") {
+							current_line = strLineContent;
+						}
+						this_thread::sleep_for(chrono::milliseconds(10));
+					}
+				}
 			}
 
 		} else {
@@ -105,19 +134,38 @@ int initial(char *filePath,
 }
 
 
-char *calculate(int loopMark,int sequence, int load, double timedata,int toolnum,
+char *calculate(int loopMark,int sequence, int load, double timedata,int toolNum,
 	vector<vector<double>> &limit,
 	vector<vector<double>> &countnum,
 	vector<vector<double>> &load_ago) 
 {
+	int retLoad;
+	int retToolNum;
+	double retMax;
+	double retMin;
 	countPointNum++;
-	if (countPointNum == 1) {
+	if (configTotalNum != 0) {
+		if (countPointNum == 1) {
 
-	} else if (countPointNum == 2) {
+		} else if (countPointNum > 1) {
+		} else if(countPointNum >= configTotalNum) {
 
+		} else {
+
+		}
 	}
 
 	Json::Value root;
+	Json::Value arrayObj; 
+
+	arrayObj["Load"] = 1;
+	arrayObj["Upper limit"] = 3.5;
+	arrayObj["Lower limit"] = 1.5;
+	arrayObj["Toolnum"] = 2;
+
+	root["calculate"].append(arrayObj);
+
+	string strRet = root.toStyledString();
 
 	return "";
 }
